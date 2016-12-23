@@ -1,0 +1,23 @@
+.navbar-text {
+	display: inline-block;
+	margin: 15px;
+}
+.navbar-header {
+	display: inline-block;
+}
+
+p.tags{
+	padding: 10px 0;
+}
+img.profile{
+	padding: 0;
+	max-width: 80px;
+	float: right;
+}
+img.forum{
+	padding: 0;
+	max-width: 50px;
+	float: none;
+}
+
+
