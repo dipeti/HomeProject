@@ -4,7 +4,14 @@
     <div class="row">
         <!-- Blog Entries Column -->
         <div class="col-sm-8">
-            <h1>Blogposts<hr class="page"></h1>
+            <h1>Blogposts</h1><hr>
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }} Click <a href="{{ path('homepage') }}">here</a> to go back.
+                </div>
+            {% endif %}
+
+
             {% for post in posts %}
                 <h2>
                     <a href="{{ path('readPost',{'slug': post.id}) }}">{{ post.title }}</a>
@@ -13,60 +20,20 @@
                 <p><span class="glyphicon glyphicon-time"></span> Posted on {{ post.postedAt.format('Y-m-d') }}</p>
                 <hr>
                 {% if post.imgURI is not null %}
-                    <img class="img-post img-responsive" src="{{ post.imgURI }}" alt="{{ post.title }}"> <hr>
+                    <a href="{{ path('readPost',{'slug': post.id}) }}"><img class="img-post img-responsive" src="{{ post.imgURI }}" alt="{{ post.title }}"></a> <hr>
                 {% endif %}
 
                 <p>{{ post.content|slice(0,300) }}...</p>
                 <a class="btn btn-primary" href="{{ path('readPost',{'slug': post.id}) }}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
                 <p class="tags">Tags:
                     {% for tag in post.tags %}
-                        <a href="#"><span class="label label-default">{{ tag }}</span></a>
+                        <a href="{{ path('homepage') }}?q={{ tag }}"><span class="label label-default">{{ tag }}</span></a>
                     {% endfor %}
                     | <i class="icon-comment"></i> <a href="{{ path('readPost',{'slug': post.id}) }}#comments">{{ post.comments|length }} Comments</a>
                 </p>
                 <hr>
             {% endfor %}
-            <!-- First Blog Post -->
-            {#<!-- Second Blog Post -->#}
-            {#<h2>#}
-                {#<a href="#">Second Blog Post Title</a> <small>by lacika</small>#}
-            {#</h2>#}
-            {#<p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>#}
-            {#<hr>#}
-            {#<img class="img-responsive" src="http://placehold.it/900x300" alt="">#}
-            {#<hr>#}
-            {#<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, quasi, fugiat, asperiores harum voluptatum tenetur a possimus nesciunt quod accusamus saepe tempora ipsam distinctio minima dolorum perferendis labore impedit voluptates!</p>#}
-            {#<a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>#}
-            {#<p class="tags">Tags:#}
-                {#<a href="#"><span class="label label-default">Snipp</span></a>#}
-                {#<a href="#"><span class="label label-default">Bootstrap</span></a>#}
-                {#<a href="#"><span class="label label-default">UI</span></a>#}
-                {#<a href="#"><span class="label label-default">growth</span></a>#}
-                {#| <i class="icon-comment"></i> <a href="#">3 Comments</a>#}
-            {#</p>#}
-            {#<hr>#}
 
-            {#<!-- Third Blog Post -->#}
-            {#<h2>#}
-                {#<a href="#">Third Blog Post Title</a>#}
-            {#</h2>#}
-            {#<p class="lead">#}
-                {#by <a href="index.php">Start Bootstrap</a>#}
-            {#</p>#}
-            {#<p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>#}
-            {#<hr>#}
-            {#<img class="img-responsive" src="http://placehold.it/900x300" alt="">#}
-            {#<hr>#}
-            {#<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate, voluptates, voluptas dolore ipsam cumque quam veniam accusantium laudantium adipisci architecto itaque dicta aperiam maiores provident id incidunt autem. Magni, ratione.</p>#}
-            {#<a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>#}
-            {#<p class="tags">Tags:#}
-                {#<a href="#"><span class="label label-default">Snipp</span></a>#}
-                {#<a href="#"><span class="label label-default">Bootstrap</span></a>#}
-                {#<a href="#"><span class="label label-default">UI</span></a>#}
-                {#<a href="#"><span class="label label-default">growth</span></a>#}
-                {#| <i class="icon-comment"></i> <a href="#">3 Comments</a>#}
-            {#</p>#}
-            {#<hr>#}
             <!-- Pager -->
             <ul class="pager">
                 <li class="previous">
@@ -83,14 +50,16 @@
             <!-- Blog Search Well -->
             <div class="well">
                 <h4>Blog Search</h4>
+                <form method="get">
                 <div class="input-group">
-                    <input type="text" class="form-control">
+                    <input type="text" name="q" class="form-control">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">
+                        <button class="btn btn-default" type="submit">
                             <span class="glyphicon glyphicon-search"></span>
                         </button>
                     </span>
                 </div>
+                </form>
                 <!-- /.input-group -->
             </div>
             <!-- Blog Categories Well -->
