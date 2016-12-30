@@ -19,5 +19,14 @@ img.forum{
 	max-width: 50px;
 	float: none;
 }
-
+.img-post{
+	max-width: 60%;
+	margin: auto;
+}
+textarea.form-control{
+	resize: vertical;
+}
+.media-body{
+	font-size: x-large;
+}
 

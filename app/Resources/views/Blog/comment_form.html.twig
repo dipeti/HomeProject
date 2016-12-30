@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+{% block pagecontent %}
+    <div class="container">
+        <label for="original">Original text:</label>
+        <textarea class="form-control" name="original" id="original" disabled>{{ original }}</textarea>
+        <hr>
+        {{ form(form) }}
+    </div>
+
+{% endblock %}
+

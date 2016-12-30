@@ -1,0 +1,83 @@
+{% extends "base.html.twig" %}
+{% block pagecontent %}
+<div class="container">
+    <div class="row">
+        <!-- Blog Post Content Column -->
+        <div class="col-sm-9">
+            <!-- Blog Post -->
+            <!-- Title -->
+            <h1>{{ post.title }} <small>by {{ post.author }}</small></h1><!-- Author -->
+            <hr>
+            <!-- Date/Time -->
+            <p><span class="glyphicon glyphicon-time"></span> Posted on {{ post.postedAt.format('Y-m-d') }}
+                <span class="pull-right">Tags:
+                {% for tag in post.tags %}
+                    <a href="#"><span class="label label-default">{{ tag }}</span></a>
+                {% endfor %}
+                | <i class="icon-comment"></i> <a href="#comments">{{ post.comments|length }} Comments</a>
+                </span>
+            </p>
+            <hr>
+            <!-- Preview Image -->
+            {% if post.imgURI is not null %}
+                <img class="img-responsive center-block img-post" src="{{ post.imgURI }}" alt="{{ post.title }}"><hr>
+            {% endif %}
+            <!-- Post Content -->
+            <p class="lead">{{ post.content|nl2br }}</p>
+            <hr>
+
+            <!-- Blog Comments -->
+
+            <!-- Comments Form -->
+            <div class="well">
+                <h4>Leave a Comment:</h4>
+                {{ form(comment_form) }}
+                {#<form role="form">#}
+                    {#<div class="form-group">#}
+                        {#<textarea class="form-control" rows="3"></textarea>#}
+                    {#</div>#}
+                    {#<button type="submit" class="btn btn-primary">Submit</button>#}
+                {#</form>#}
+            </div>
+            <!-- Posted Comments -->
+            <!-- Comment -->
+            <div id="comments"></div>
+            {% for comment in comments %}
+            <div class="media">
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        {# @var comment \AppBundle\Entity\Comment #}
+                        <small> [#{{ loop.index }}] | {{ comment.postedAt.format('Y-m-d H:i:s') }}</small>
+                        <a href="{{ path('editComment', {'id': comment.id}) }}" class="btn btn-xs btn-warning">EDIT</a>
+                        <a href="{{ path('deleteComment', {'id': comment.id}) }}" class="btn btn-xs btn-danger">DELETE</a>
+                    </h4>
+
+                    {{ comment.content|nl2br }}
+                    </div>
+            </div>
+            {% endfor %}
+        </div>
+            <!-- Blog Sidebar Widgets Column -->
+        <div class="col-sm-3">
+            <div class="well">
+                <h2>Recent posts</h2>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ul style="padding: 10px" class="list-unstyled">
+                            {% for recent in recents %}
+                                <li><a href="{{ path('readPost',{'slug': recent.id}) }}">{{ recent.title }}</a>
+                                    <small> posted on {{ recent.postedAt.format('Y-m-d') }}</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div><!-- /.well -->
+        </div><!-- /.col-sm-3 -->
+    </div><!-- /.row -->
+</div><!-- /.container -->
+{% endblock %}
+
+

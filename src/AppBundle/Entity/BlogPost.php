@@ -9,7 +9,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class BlogPost
@@ -53,7 +52,8 @@ class BlogPost
     private $_tags;
 
     /**
-     * @ORM\Column(type="array", name="comments")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Comment", mappedBy="_post")
+     *
      */
     private $_comments;
 
@@ -242,5 +242,36 @@ class BlogPost
     public function getImgURI()
     {
         return $this->_imgURI;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->_comments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add comment
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     *
+     * @return BlogPost
+     */
+    public function addComment(\AppBundle\Entity\Comment $comment)
+    {
+        $this->_comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \AppBundle\Entity\Comment $comment
+     */
+    public function removeComment(\AppBundle\Entity\Comment $comment)
+    {
+        $this->_comments->removeElement($comment);
     }
 }
