@@ -13,7 +13,11 @@ class BlogController extends Controller
      */
     public function indexAction(Request $request)
     {
-        // replace this example code with whatever you need
-        return $this->render(':Blog:home.html.twig');
+        $repo = $this->getDoctrine()->getRepository('AppBundle:BlogPost');
+        $posts = $repo->findAll();
+
+        return $this->render(':Blog:home.html.twig',[
+            'posts' => $posts
+        ]);
     }
 }
