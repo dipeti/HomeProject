@@ -3,26 +3,40 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Service\BlogManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlogController extends Controller
 {
     /**
+     * @var BlogManager $manager
+     */
+    protected $manager;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        $this->manager= $this->get('app.blog_manager');
+    }
+
+    /**
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:BlogPost');
+        $this->manager= $this->get('app.blog_manager');
         $query = $request->get('q');
         if(null!==$query){
-            $posts = $repo->findBy(['_title'=>$query]);
+
+             $posts = $this->manager->findPostsByQuery($query);
         }else{
-        $posts = $repo->findAll();
+        $posts = $this->manager->findAllPosts();
+
         }
-        $posts = array_reverse($posts);
+
         return $this->render(':Blog:home.html.twig',[
             'posts' => $posts,
             'error'=> count($posts) ? '' : 'Unfortunately there is no matching result!'

@@ -4,14 +4,27 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Comment;
 use AppBundle\Form\CommentType;
+use AppBundle\Service\BlogManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+
 use Symfony\Component\HttpFoundation\Request;
 
 class PostController extends Controller
 {
+    /**
+     * @var BlogManager $manager
+     */
+    protected $manager;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        $this->manager= $this->get('app.blog_manager');
+    }
     /**
      * @param $slug
      * @return \Symfony\Component\HttpFoundation\Response
@@ -19,21 +32,17 @@ class PostController extends Controller
      */
     public function readAction(Request $request, $slug)
     {
+        $post = $this->manager->findPostById($slug);
+        $recents = $this->manager->findAllPosts();
         $form = $this->createForm(CommentType::class);
         $form->handleRequest($request);
-
-
         if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
-            $comment->setPost($this->getDoctrine()->getRepository('AppBundle:BlogPost')->find($slug));
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
+            $comment->setPost($post);
+            $this->manager->persistComment($comment);
             return $this->redirect($this->generateUrl('readPost',['slug'=> $slug])."#comments");
         }
-        $repo =$this->getDoctrine()->getRepository('AppBundle:BlogPost');
-        $post = $repo ->find($slug);
-        $recents = $repo->findAll();
+
         return $this->render(':Blog:post.html.twig', array(
             'post' => $post,
             'recents' => $recents,
@@ -45,16 +54,11 @@ class PostController extends Controller
     /**
      * @Route("/delete/comment/{id}", name="deleteComment")
      */
-    public function deleteCommentAction($id){
+    public function deleteCommentAction(Request $request, $id){
 
-       $repo = $this->getDoctrine()->getRepository('AppBundle:Comment');
-       $toBeDeleted = $repo->find($id);
+        $this->manager->deleteComment($id);
+        return $this->redirectToReferer($request);
 
-        $slug = $toBeDeleted->getPost()->getId();
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($toBeDeleted);
-        $em->flush();
-       return $this->redirect($this->generateUrl('readPost', ['slug'=> $slug])."#comments");
     }
     /**
      * @Route("/edit/comment/{id}", name="editComment")
@@ -63,7 +67,7 @@ class PostController extends Controller
 
        $repo = $this->getDoctrine()->getRepository('AppBundle:Comment');
         $toBeEdited = $repo->find($id);
-        $slug = $toBeEdited->getPost()->getId();
+
        $form = $this->createFormBuilder($toBeEdited)
            ->add('_content')
            ->add('save', SubmitType::class)
@@ -71,16 +75,20 @@ class PostController extends Controller
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($toBeEdited);
-            $em->flush();
-            return  $this->redirectToRoute('readPost',['slug' => $slug]);
+            $this->manager->persistComment($toBeEdited);
+
+            return  $this->redirect($this->generateUrl('readPost',['slug'=>$toBeEdited->getPost()->getId()])."#comments");
         }
 
         return $this->render('Blog/comment_form.html.twig', [
             'form' => $form->createView(),
             'original' => $toBeEdited->getContent(),
         ]);
+    }
+
+    private function redirectToReferer(Request $request){
+
+        return $this->redirect($request->headers->get('referer')."#comments");
     }
 
 

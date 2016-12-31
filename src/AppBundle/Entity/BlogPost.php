@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class BlogPost
  * @package AppBundle\Entity
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\BlogPostRepository")
  * @ORM\Table(name="blogposts")
  * @ORM\HasLifecycleCallbacks()
  */
