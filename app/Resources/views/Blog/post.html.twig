@@ -42,20 +42,37 @@
             <!-- Posted Comments -->
             <!-- Comment -->
             <div id="comments"></div>
-            {% for comment in comments %}
-            <div class="media">
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        {# @var comment \AppBundle\Entity\Comment #}
-                        <small> [#{{ loop.index }}] | {{ comment.postedAt.format('Y-m-d H:i:s') }}</small>
-                        <a href="{{ path('editComment', {'id': comment.id}) }}" class="btn btn-xs btn-warning">EDIT</a>
-                        <a href="{{ path('deleteComment', {'id': comment.id}) }}" class="btn btn-xs btn-danger">DELETE</a>
-                    </h4>
+            {% if is_granted('ROLE_ADMIN') %}
+                {% for comment in comments %}
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading">
+                                {# @var comment \AppBundle\Entity\Comment #}
+                                <small> [#{{ loop.index }}] | {{ comment.postedAt.format('Y-m-d H:i:s') }}</small>
+                                <a href="{{ path('editComment', {'id': comment.id}) }}" class="btn btn-xs btn-warning">EDIT</a>
+                                <a href="{{ path('deleteComment', {'id': comment.id}) }}" class="btn btn-xs btn-danger">DELETE</a>
+                            </h4>
 
-                    {{ comment.content|nl2br }}
+                            {{ comment.content|nl2br }}
+                        </div>
                     </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                {% for comment in comments %}
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading">
+                                {# @var comment \AppBundle\Entity\Comment #}
+                                <small> [#{{ loop.index }}] | {{ comment.postedAt.format('Y-m-d H:i:s') }}</small>
+                                </h4>
+                            {{ comment.content|nl2br }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+
+
         </div>
             <!-- Blog Sidebar Widgets Column -->
         <div class="col-sm-3">

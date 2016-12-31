@@ -55,7 +55,7 @@ class PostController extends Controller
      * @Route("/delete/comment/{id}", name="deleteComment")
      */
     public function deleteCommentAction(Request $request, $id){
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',null,"You do NOT possess Admin priviliges.");
         $this->manager->deleteComment($id);
         return $this->redirectToReferer($request);
 
@@ -64,6 +64,8 @@ class PostController extends Controller
      * @Route("/edit/comment/{id}", name="editComment")
      */
     public function editCommentAction(Request $request, $id){
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',null,"You do NOT possess Admin priviliges.");
 
        $repo = $this->getDoctrine()->getRepository('AppBundle:Comment');
         $toBeEdited = $repo->find($id);
@@ -84,6 +86,7 @@ class PostController extends Controller
             'form' => $form->createView(),
             'original' => $toBeEdited->getContent(),
         ]);
+
     }
 
     private function redirectToReferer(Request $request){

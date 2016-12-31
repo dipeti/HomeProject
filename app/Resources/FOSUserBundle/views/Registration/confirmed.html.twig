@@ -1,0 +1,16 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+    <div class="page-header">
+        <h1>Sikeres visszaigazolás</h1>
+    </div>
+    {#<p>{{ 'registration.confirmed'|trans({'%username%': user.username}) }}</p>#}
+
+    <a href="{{ path('fos_user_profile_show') }}"><button type="button" class="btn btn-success">Ugrás a profilomhoz</button></a>
+
+    {% if targetUrl %}
+    <p><a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a></p>
+    {% endif %}
+{% endblock fos_user_content %}
