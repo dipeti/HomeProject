@@ -85,13 +85,9 @@
                     <div class="col-md-6">
                         <h4>Tags</h4>
                         <ul class="list-unstyled">
-                            <li><a href="#">Tag</a>
-                            </li>
-                            <li><a href="#">Tag</a>
-                            </li>
-                            <li><a href="#">Tag</a>
-                            </li>
-                            <li><a href="#">Tag</a>
+                            {% for tag in randomtags %}
+                            <li><a href="{{ path('homepage') }}?q={{ tag }}"><span class="label label-default">{{ tag }}</span></a>
+                            {% endfor %}
                             </li>
                         </ul>
                     </div>

@@ -39,7 +39,9 @@ class BlogController extends Controller
 
         return $this->render(':Blog:home.html.twig',[
             'posts' => $posts,
-            'error'=> count($posts) ? '' : 'Unfortunately there is no matching result!'
+            'error'=> count($posts) ? '' : 'Unfortunately there is no matching result!',
+            'randomtags'=> $this->manager->findAllTags()
+
         ]);
     }
 

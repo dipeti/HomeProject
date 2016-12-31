@@ -85,5 +85,10 @@ class BlogManager implements BlogManagerInterface
         return true;
     }
 
+    public function findAllTags()
+    {
+       return $this->repo->findAllTags();
+    }
+
 
 }

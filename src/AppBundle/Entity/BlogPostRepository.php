@@ -39,6 +39,23 @@ class BlogPostRepository extends EntityRepository
        return $this->findBy([],['_postedAt'=>'DESC']);
     }
 
+    public function findAllTags()
+    {
+        $arr = $this->createQueryBuilder('b')
+            ->distinct(true)
+            ->select('b._tags')
+            ->getQuery()
+            ->getArrayResult();
+        $result = array();
+
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($arr));
+
+        foreach ($iterator as $value) {
+            $result[] = $value;
+        }
+        return $result;
+    }
+
 
 
 }
