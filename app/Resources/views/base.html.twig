@@ -44,7 +44,7 @@
                                     <li class="active" ><a href="{{ path('homepage') }}">Blog</a></li>
                                     <li><a href="file:///D:/php/HomeProject/downloads.html">Downloads</a></li>
                                     <li><a href="file:///D:/php/HomeProject/forum.html">Forum</a></li>
-                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">About {{ app.request.headers.get('referer') }}</a></li>
                                     <li><a href="#">Contact</a></li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
