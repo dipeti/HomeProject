@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block pagecontent %}
+<div class="container">
+    <div class="row">
+    <div class="table-responsive col-sm-12">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ uploadedFile.id }}</td>
+                </tr>
+                <tr>
+                    <th>Content</th>
+                    <td>{{ uploadedFile.content }}</td>
+                </tr>
+                <tr>
+                    <th>Filename</th>
+                    <td>{{ uploadedFile.fileName }}</td>
+                </tr>
+                <tr>
+                    <th>Size</th>
+                    <td>{{ uploadedFile.size }}</td>
+                </tr>
+                <tr>
+                    <th>Views</th>
+                    <td>{{ uploadedFile.views }}</td>
+                </tr>
+                <tr>
+                    <th>Comment</th>
+                    <td>{{ uploadedFile.comment }}</td>
+                </tr>
+            </tbody>
+    </table>
+
+        <a class="btn btn-danger" href="{{ path('downloads_delete', { 'id': uploadedFile.id }) }}">Delete</a>
+        <a class="btn btn-warning" href="{{ path('downloads_edit', { 'id': uploadedFile.id }) }}">Edit</a>
+        <hr>
+        <a class="btn btn-default" href="{{ path('downloads_index') }}">Back to the list</a>
+
+    </div>
+
+
+
+
+
+</div>
+{% endblock %}

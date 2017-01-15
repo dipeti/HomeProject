@@ -12,7 +12,11 @@ services:
           class: AppBundle\Entity\BlogPostRepository
           factory: "doctrine.orm.entity_manager:getRepository"
           arguments: [AppBundle\Entity\BlogPost]
-
+      app.comment_repo:
+          class: AppBundle\Entity\CommentRepository
+          factory: ["@doctrine", getRepository]
+          arguments:
+            - AppBundle\Entity\Comment
       app.blog_manager:
           class: AppBundle\Service\BlogManager
-          arguments: ["@app.blog_repo", "@doctrine.orm.entity_manager"]
+          arguments: ["@app.blog_repo", "@app.comment_repo"]

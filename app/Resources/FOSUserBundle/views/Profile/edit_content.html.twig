@@ -1,9 +1,8 @@
-{% trans_default_domain 'FOSUserBundle' %}
 
 {{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
     {{ form_widget(form) }}
     <div>
-        <input type="submit" value="{{ 'profile.edit.submit'|trans }}" class="btn btn-success" />
-        <a href="{{ path('fos_user_profile_show') }}"><button type="button" class="btn btn-default">Mégsem</button></a>
+        <input type="submit" value="Submit" class="btn btn-success" />
+        <a href="{{ path('fos_user_profile_show') }}"><button type="button" class="btn btn-default">Cancel</button></a>
     </div>
 {{ form_end(form) }}

@@ -20,12 +20,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CommentType extends AbstractType
 {
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        if ($options['always_empty']) {
-            $view->vars['value'] = '';
-        }
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -37,8 +31,6 @@ class CommentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'always_empty' => true,
-            'trim' => false,
             'data_class'=>Comment::class
         ));
     }

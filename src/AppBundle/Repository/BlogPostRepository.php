@@ -1,10 +1,11 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * BlogPostRepository
@@ -15,7 +16,13 @@ use Doctrine\ORM\Mapping;
 class BlogPostRepository extends EntityRepository
 {
 
-
+    public function add($post)
+    {
+        $em = $this->getEntityManager();
+        $em->persist($post);
+        $em->flush();
+        return $em->getConnection()->lastInsertId();
+    }
     public function findByQuery($query)
     {
         return $this->createQueryBuilder('b')
@@ -34,10 +41,16 @@ class BlogPostRepository extends EntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Paginator
+     */
     public function findAllDesc()
     {
-       return $this->findBy([],['_postedAt'=>'DESC']);
-    }
+        $query = $this->createQueryBuilder('p')
+            ->select('p')
+            ->orderBy('p._postedAt','desc');
+        return new Paginator($query);
+  }
 
     public function findAllTags()
     {
@@ -46,13 +59,14 @@ class BlogPostRepository extends EntityRepository
             ->select('b._tags')
             ->getQuery()
             ->getArrayResult();
+
         $result = array();
-
         $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($arr));
-
         foreach ($iterator as $value) {
             $result[] = $value;
         }
+        $result = array_unique($result);
+        shuffle($result);
         return $result;
     }
 

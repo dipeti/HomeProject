@@ -9,11 +9,13 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class BlogPost
  * @package AppBundle\Entity
- * @ORM\Entity(repositoryClass="AppBundle\Entity\BlogPostRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\BlogPostRepository")
  * @ORM\Table(name="blogposts")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -28,11 +30,13 @@ class BlogPost
 
     /**
      * @ORM\Column(type="string", length=64, unique=true, name="title")
+     * @Assert\Length(min="5")
      */
     private $_title;
 
     /**
      * @ORM\Column(type="text", name="content")
+     * @Assert\Length(min="5")
      */
     private $_content;
 
@@ -59,6 +63,8 @@ class BlogPost
 
     /**
      * @ORM\Column(type="string", nullable=true, name="img_uri")
+     * @Assert\File(mimeTypes={"image/jpeg", "image\png"})
+     * @Assert\Image(maxHeight="300", maxWidth="900")
      */
     private $_imgURI;
 

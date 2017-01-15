@@ -12,28 +12,35 @@ namespace AppBundle\Service;
 use AppBundle\Entity\BlogPost;
 use AppBundle\Entity\BlogPostRepository;
 use AppBundle\Entity\Comment;
+use AppBundle\Entity\CommentRepository;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 
 class BlogManager implements BlogManagerInterface
 {
-    /**
-     * @var BlogPostRepository $repo
-     * @var EntityManager $em
-     */
-    protected $repo;
-    protected $em;
-    public function __construct(ObjectRepository $blogRepo, EntityManagerInterface $em)
+
+    protected $blogRepo;
+    protected $commentRepo;
+    public function __construct(ObjectRepository $blogRepo, ObjectRepository $commentRepo)
     {
-        $this->repo = $blogRepo;
-        $this->em = $em;
+        /**
+         * @var BlogPostRepository $blogRepo
+         * @var CommentRepository $commentRepo
+         */
+        $this->blogRepo = $blogRepo;
+        $this->commentRepo = $commentRepo;
     }
 
-    public function addPost($data)
+    /**
+     * @param BlogPost $post
+     */
+    public function addPost($post)
     {
-        // TODO: Implement addPost() method.
+       $this->blogRepo->add($post);
+
     }
     /**
      *
@@ -41,15 +48,21 @@ class BlogManager implements BlogManagerInterface
      */
     public function findPostsByQuery($query)
     {
-          return $this->repo->findByQuery($query);
+          return $this->blogRepo->findByQuery($query);
     }
 
     /**
-     * @return BlogPost[]
+     * @return Paginator
      */
-    public function findAllPosts()
+    public function findAllPosts($page, $limit = 5)
     {
-       return $this->repo->findAllDesc();
+       $paginator = $this->blogRepo->findAllDesc();
+       $paginator->getQuery()
+            ->setFirstResult($limit * ($page-1))
+            ->setMaxResults($limit);
+        return $paginator;
+
+
     }
 
     /**
@@ -58,17 +71,16 @@ class BlogManager implements BlogManagerInterface
      */
     public function findPostById($slug)
     {
-       return $this->repo->find($slug);
+       return $this->blogRepo->find($slug);
     }
 
     /**
      * @param Comment $comment
      * @return bool
      */
-    public function persistComment($comment)
+    public function addComment($comment)
     {
-        $this->em->persist($comment);
-        $this->em->flush();
+        $this->commentRepo->add($comment);
         return true;
     }
 
@@ -78,16 +90,13 @@ class BlogManager implements BlogManagerInterface
      */
     public function deleteComment($id)
     {
-        $commentRepo = $this->em->getRepository('AppBundle:Comment');
-        $toBeDeleted = $commentRepo->find($id);
-        $this->em->remove($toBeDeleted);
-        $this->em->flush();
+        $this->commentRepo->delete($id);
         return true;
     }
 
-    public function findAllTags()
+    public function findAllTags($limit)
     {
-       return $this->repo->findAllTags();
+       return array_slice($this->blogRepo->findAllTags($limit),0,5);
     }
 
 

@@ -11,6 +11,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\BlogPost;
 use AppBundle\Entity\Comment;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 interface BlogManagerInterface
 {
@@ -21,9 +22,11 @@ interface BlogManagerInterface
     public function findPostsByQuery($query);
 
     /**
-     * @return BlogPost[]
+     * @param  integer $page
+     * @param  integer $limit
+     * @return Paginator
      */
-    public function findAllPosts();
+    public function findAllPosts($page, $limit);
 
     /**
      * @param $slug integer
@@ -35,7 +38,7 @@ interface BlogManagerInterface
      * @param Comment $comment
      * @return bool
      */
-    public function persistComment($comment);
+    public function addComment($comment);
 
     /**
      * @param  Comment $comment
@@ -48,6 +51,8 @@ interface BlogManagerInterface
      * @return mixed
      */
     public function addPost($data);
+
+    public function findAllTags($limit);
 
 
 }

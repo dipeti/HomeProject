@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block pagecontent %}
+    <div class="container">
+        <div class="row">
+            {{ form_start(edit_form) }}
+                {{ form_widget(edit_form) }}
+            {{ form_end(edit_form) }}
+            <hr>
+            <a class="btn btn-default" href="{{ path('downloads_index') }}">Back to the list</a>
+        </div>
+    </div>
+{% endblock %}

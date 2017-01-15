@@ -20,10 +20,10 @@
             <hr>
             <!-- Preview Image -->
             {% if post.imgURI is not null %}
-                <img class="img-responsive center-block img-post" src="{{ post.imgURI }}" alt="{{ post.title }}"><hr>
+                <img class="img-responsive center-block img-post" src="{{ asset('app/images/' ~ post.imgURI) }}" alt="{{ post.title }}"><hr>
             {% endif %}
             <!-- Post Content -->
-            <p class="lead">{{ post.content|nl2br }}</p>
+            <p class="lead">{{ post.content|raw|nl2br }}</p>
             <hr>
 
             <!-- Blog Comments -->

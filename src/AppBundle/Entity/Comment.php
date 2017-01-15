@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Comment
  * @package AppBundle\Entity
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CommentRepository")
  * @ORM\Table(name="comments")
  * @ORM\HasLifecycleCallbacks()
  */
