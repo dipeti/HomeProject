@@ -41,7 +41,9 @@ class PostController extends Controller
     public function readAction(Request $request, $slug)
     {
 
+
         $post = $this->manager->findPostById($slug);
+        if(!$post) throw $this->createNotFoundException();
         $recents = $this->manager->findAllPosts(1);
         $form = $this->createForm(CommentType::class);
         $form->handleRequest($request);

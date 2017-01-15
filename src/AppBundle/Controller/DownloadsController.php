@@ -25,8 +25,9 @@ class DownloadsController extends Controller
      */
     public function downloadAction($uri)
     {
+        if(!$this->isGranted("IS_AUTHENTICATED_FULLY")) return $this->redirectToRoute('downloads_index');
         $repo = $this->getDoctrine()->getManager()->getRepository('AppBundle:UploadedFile');
-        $file = $repo->findOneBy(['content'=>$uri]);
+        $file = $repo->findOneBy(['uri'=>$uri]);
         $path = $this->getParameter('files_dir').$uri;
 
         if(!$file || !file_exists($path)) throw $this->createNotFoundException('File is not available!') ;
@@ -69,6 +70,7 @@ class DownloadsController extends Controller
      */
     public function newAction(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',null,"You do NOT possess Admin priviliges.");
         $uploadedFile = new Uploadedfile();
         $form = $this->createForm('AppBundle\Form\UploadedFileType', $uploadedFile);
         $form->handleRequest($request);
@@ -79,13 +81,13 @@ class DownloadsController extends Controller
              */
             $file = $uploadedFile->getContent();
             if(!$uploadedFile->getFileName()){
-                $uploadedFile->setFileName($file->getClientOriginalName());
+                $uploadedFile->setFileName(str_replace(' ', '-',$file->getClientOriginalName()));
             }
             else $uploadedFile->setFileName($uploadedFile->getFileName().'.'.$file->guessExtension());
             $uploadedFile->setSize($file->getSize());
             $filename = md5(uniqid()).$uploadedFile->getFileName();
             $file->move('app/files', $filename);
-            $uploadedFile->setContent($filename);
+            $uploadedFile->setUri($filename);
             $em = $this->getDoctrine()->getManager();
             $em->persist($uploadedFile);
             $em->flush($uploadedFile);
@@ -107,6 +109,7 @@ class DownloadsController extends Controller
      */
     public function showAction(UploadedFile $uploadedFile)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',null,"You do NOT possess Admin priviliges.");
         return $this->render('uploadedfile/show.html.twig', array(
             'uploadedFile' => $uploadedFile,
         ));
@@ -120,14 +123,15 @@ class DownloadsController extends Controller
      */
     public function editAction(Request $request, UploadedFile $uploadedFile)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',null,"You do NOT possess Admin priviliges.");
         $editForm = $this->createFormBuilder($uploadedFile)
-        ->add('filename')->add('comment')->add('save',SubmitType::class)->getForm();
+        ->add('filename')->add('comment')->getForm();
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('downloads_edit', array('id' => $uploadedFile->getId()));
+            return $this->redirectToRoute('downloads_show', array('id' => $uploadedFile->getId()));
         }
 
         return $this->render('uploadedfile/edit.html.twig', array(
@@ -143,6 +147,7 @@ class DownloadsController extends Controller
      */
     public function deleteAction(Request $request, UploadedFile $uploadedFile)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN',null,"You do NOT possess Admin priviliges.");
         $em = $this->getDoctrine()->getManager();
         $em->remove($uploadedFile);
         $em->flush($uploadedFile);

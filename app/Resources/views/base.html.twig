@@ -42,7 +42,7 @@
                             <div class="collapse navbar-collapse" id="myNavbar">
                                 <ul class="nav navbar-nav">
                                     <li class="{% if app.request.attributes.get('_route') starts with 'homepage'  %}active{% endif %}" ><a href="{{ path('homepage') }}">Blog</a></li>
-                                    <li class="{% if app.request.attributes.get('_route') == 'downloads' %}active{% endif %}"><a href="{{ path('downloads_index') }}">Downloads</a></li>
+                                    <li class="{% if app.request.attributes.get('_route') starts with 'download' %}active{% endif %}"><a href="{{ path('downloads_index') }}">Downloads</a></li>
                                     <li><a href="file:///D:/php/HomeProject/forum.html">Forum</a></li>
                                     <li><a href="#">About</a></li>
                                     <li><a href="#">Contact</a></li>

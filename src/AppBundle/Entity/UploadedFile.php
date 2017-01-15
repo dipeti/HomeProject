@@ -24,10 +24,16 @@ class UploadedFile
     private $id;
 
     /**
-     * @ORM\Column(name="uri", type="string")
-     * @Assert\File(maxSize="10M")
+     *
+     * @Assert\File(maxSize="5M")
      */
     private $content;
+
+    /**
+     * @ORM\Column(name="uri", type="string")
+     *
+     */
+    private $uri;
 
     /**
      * @return mixed
@@ -35,6 +41,22 @@ class UploadedFile
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @param mixed $uri
+     */
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
     }
 
     /**
@@ -64,8 +86,8 @@ class UploadedFile
      */
     public function removeUpload()
     {
-        if ($file = $this->getContent()) {
-            unlink('app/files/'.$file);
+        if ($file = $this->getUri()) {
+            unlink('bundles/app/files/'.$file);
         }
     }
 
@@ -83,10 +105,10 @@ class UploadedFile
     public function getSize()
     {
         if($this->size<1000000){
-       $kb = round($this->size/(1024),2);
+       $kb = round($this->size/(1000),2);
         return "{$kb}".' KB';
         }
-        $mb = round($this->size/(1024*1024),2);
+        $mb = round($this->size/(1000000),2);
         return "{$mb}".' MB';
 
     }
