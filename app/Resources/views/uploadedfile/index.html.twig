@@ -34,7 +34,7 @@
                         {% for uploadedFile in uploadedFiles %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td><a href="{{ path('downloads_get', {'uri': uploadedFile.uri}) }}">{{ uploadedFile.fileName }}</a></td>
+                            <td><a href="{{ path('downloads_get', {'uri': uploadedFile.uri}) }}">{{ uploadedFile.fileName }} (.{{ uploadedFile.extension }})  </a></td>
                             <td>{{ uploadedFile.size }}</td>
                             <td><span class="badge">{{ uploadedFile.views }}</span></td>
                             <td>{{ uploadedFile.comment }}</td>

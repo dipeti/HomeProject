@@ -34,6 +34,52 @@ class UploadedFile
      *
      */
     private $uri;
+    /**
+     * @ORM\Column(name="absolute_path", type="string")
+     */
+    private $absolutePath;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string",nullable=true)
+     * @Assert\Regex(pattern = "/[\s]+/", htmlPattern=false, match=false, message="Filename must not contain whitespaces!")
+     */
+    private $fileName;
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $extension;
+
+    /**
+     * @return mixed
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param mixed $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
+    }
+    /**
+     * @return mixed
+     */
+    public function getAbsolutePath()
+    {
+        return $this->absolutePath;
+    }
+
+    /**
+     * @param mixed $absolutePath
+     */
+    public function setAbsolutePath($absolutePath)
+    {
+        $this->absolutePath = $absolutePath;
+    }
 
     /**
      * @return mixed
@@ -67,12 +113,7 @@ class UploadedFile
         $this->content = $content;
     }
 
-    /**
-     * @var string
-     * @ORM\Column(type="string",nullable=true)
-     * @Assert\Regex(pattern = "/[\s]+/", htmlPattern=false, match=false, message="Filename must not contain whitespaces!")
-     */
-    private $fileName;
+
 
     /**
      * @return string
@@ -86,9 +127,7 @@ class UploadedFile
      */
     public function removeUpload()
     {
-        if ($file = $this->getUri()) {
-            unlink('bundles/app/files/'.$file);
-        }
+        unlink($this->getAbsolutePath());
     }
 
     /**

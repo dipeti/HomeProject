@@ -28,14 +28,14 @@ class DownloadsController extends Controller
         if(!$this->isGranted("IS_AUTHENTICATED_FULLY")) return $this->redirectToRoute('downloads_index');
         $repo = $this->getDoctrine()->getManager()->getRepository('AppBundle:UploadedFile');
         $file = $repo->findOneBy(['uri'=>$uri]);
-        $path = $this->getParameter('files_dir').$uri;
 
-        if(!$file || !file_exists($path)) throw $this->createNotFoundException('File is not available!') ;
-        $response = new Response($path);
+
+        if(!$file || !file_exists($file->getAbsolutePath())) throw $this->createNotFoundException('File is not available!') ;
+        $response = new Response($file->getAbsolutePath());
 
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $file->getFileName()
+            $file->getFileName().'.'.$file->getExtension()
         );
         $response->headers->set('Content-Disposition', $disposition);
         $file->setViews(1);
@@ -80,14 +80,22 @@ class DownloadsController extends Controller
              * @var $file File
              */
             $file = $uploadedFile->getContent();
-            if(!$uploadedFile->getFileName()){
-                $uploadedFile->setFileName(str_replace(' ', '-',$file->getClientOriginalName()));
-            }
-            else $uploadedFile->setFileName($uploadedFile->getFileName().'.'.$file->guessExtension());
+            $extension = $file->guessExtension();
+            $client_filename = str_replace(' ', '-',pathinfo($file->getClientOriginalName())['filename']);
+
+            $uploadedFile->setExtension($extension);
+            // if filename is not given, use the client_filename
+            if(!$uploadedFile->getFileName())
+                $uploadedFile->setFileName($client_filename);
+
+
             $uploadedFile->setSize($file->getSize());
-            $filename = md5(uniqid()).$uploadedFile->getFileName();
-            $file->move('app/files', $filename);
-            $uploadedFile->setUri($filename);
+            $db_filename = md5(uniqid()).$uploadedFile->getFileName();
+            $db_abs_path = $this->getParameter('files_dir').$uploadedFile->getFileName().'.'.$extension;
+            $uploadedFile->setAbsolutePath($db_abs_path);
+            $fileinfo = pathinfo($uploadedFile->getAbsolutePath());
+            $file->move($fileinfo['dirname'],$fileinfo['basename']);
+            $uploadedFile->setUri($fileinfo['basename']);
             $em = $this->getDoctrine()->getManager();
             $em->persist($uploadedFile);
             $em->flush($uploadedFile);
