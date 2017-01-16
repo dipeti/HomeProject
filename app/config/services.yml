@@ -9,14 +9,17 @@ services:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
       app.blog_repo:
-          class: AppBundle\Entity\BlogPostRepository
+          class: AppBundle\Repository\BlogPostRepository
           factory: "doctrine.orm.entity_manager:getRepository"
           arguments: [AppBundle\Entity\BlogPost]
       app.comment_repo:
-          class: AppBundle\Entity\CommentRepository
+          class: AppBundle\Repository\CommentRepository
           factory: ["@doctrine", getRepository]
           arguments:
             - AppBundle\Entity\Comment
       app.blog_manager:
           class: AppBundle\Service\BlogManager
           arguments: ["@app.blog_repo", "@app.comment_repo"]
+      app.file_uploader:
+          class: AppBundle\Service\FileUploadHelper
+          arguments: ["%files_dir%"]

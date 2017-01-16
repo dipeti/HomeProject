@@ -26,13 +26,13 @@ class DownloadsController extends Controller
     public function downloadAction($uri)
     {
         if(!$this->isGranted("IS_AUTHENTICATED_FULLY")) return $this->redirectToRoute('downloads_index');
+
         $repo = $this->getDoctrine()->getManager()->getRepository('AppBundle:UploadedFile');
         $file = $repo->findOneBy(['uri'=>$uri]);
 
-
         if(!$file || !file_exists($file->getAbsolutePath())) throw $this->createNotFoundException('File is not available!') ;
-        $response = new Response($file->getAbsolutePath());
 
+        $response = new Response($file->getAbsolutePath());
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $file->getFileName().'.'.$file->getExtension()
@@ -57,7 +57,7 @@ class DownloadsController extends Controller
 
         $uploadedFiles = $em->getRepository('AppBundle:UploadedFile')->findAll();
 
-        return $this->render('uploadedfile/index.html.twig', array(
+        return $this->render('downloads/index.html.twig', array(
             'uploadedFiles' => $uploadedFiles,
         ));
     }
@@ -76,34 +76,14 @@ class DownloadsController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /**
-             * @var $file File
-             */
-            $file = $uploadedFile->getContent();
-            $extension = $file->guessExtension();
-            $client_filename = str_replace(' ', '-',pathinfo($file->getClientOriginalName())['filename']);
-
-            $uploadedFile->setExtension($extension);
-            // if filename is not given, use the client_filename
-            if(!$uploadedFile->getFileName())
-                $uploadedFile->setFileName($client_filename);
-
-
-            $uploadedFile->setSize($file->getSize());
-            $db_filename = md5(uniqid()).$uploadedFile->getFileName();
-            $db_abs_path = $this->getParameter('files_dir').$uploadedFile->getFileName().'.'.$extension;
-            $uploadedFile->setAbsolutePath($db_abs_path);
-            $fileinfo = pathinfo($uploadedFile->getAbsolutePath());
-            $file->move($fileinfo['dirname'],$fileinfo['basename']);
-            $uploadedFile->setUri($fileinfo['basename']);
+            $file = $this->get('app.file_uploader')->upload($uploadedFile);
             $em = $this->getDoctrine()->getManager();
-            $em->persist($uploadedFile);
-            $em->flush($uploadedFile);
-
+            $em->persist($file);
+            $em->flush();
             return $this->redirectToRoute('downloads_show', array('id' => $uploadedFile->getId()));
         }
 
-        return $this->render('uploadedfile/new.html.twig', array(
+        return $this->render('downloads/new.html.twig', array(
             'uploadedFile' => $uploadedFile,
             'form' => $form->createView(),
         ));
@@ -118,7 +98,7 @@ class DownloadsController extends Controller
     public function showAction(UploadedFile $uploadedFile)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN',null,"You do NOT possess Admin priviliges.");
-        return $this->render('uploadedfile/show.html.twig', array(
+        return $this->render('downloads/show.html.twig', array(
             'uploadedFile' => $uploadedFile,
         ));
     }
@@ -142,7 +122,7 @@ class DownloadsController extends Controller
             return $this->redirectToRoute('downloads_show', array('id' => $uploadedFile->getId()));
         }
 
-        return $this->render('uploadedfile/edit.html.twig', array(
+        return $this->render('downloads/edit.html.twig', array(
             'edit_form' => $editForm->createView(),
         ));
     }
