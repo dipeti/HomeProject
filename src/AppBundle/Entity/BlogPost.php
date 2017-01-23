@@ -11,6 +11,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Class BlogPost
@@ -33,6 +34,13 @@ class BlogPost
      * @Assert\Length(min="5")
      */
     private $_title;
+
+    /**
+     * @Gedmo\Slug(fields={"_title"})
+     * @ORM\Column(type="string", length=64, unique=true, name="slug")
+     */
+    private $_slug;
+
 
     /**
      * @ORM\Column(type="text", name="content")
@@ -279,5 +287,20 @@ class BlogPost
     public function removeComment(\AppBundle\Entity\Comment $comment)
     {
         $this->_comments->removeElement($comment);
+    }
+    /**
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->_slug;
+    }
+
+    /**
+     * @param mixed $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->_slug = $slug;
     }
 }

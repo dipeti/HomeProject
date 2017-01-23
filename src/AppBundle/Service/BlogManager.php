@@ -10,9 +10,11 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\BlogPost;
-use AppBundle\Entity\BlogPostRepository;
+
 use AppBundle\Entity\Comment;
-use AppBundle\Entity\CommentRepository;
+
+use AppBundle\Repository\BlogPostRepository;
+use AppBundle\Repository\CommentRepository;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,9 +71,9 @@ class BlogManager implements BlogManagerInterface
      * @param $slug
      * @return BlogPost
      */
-    public function findPostById($slug)
+    public function findPostBySlug($slug)
     {
-       return $this->blogRepo->find($slug);
+       return $this->blogRepo->findBySlug($slug);
     }
 
     /**

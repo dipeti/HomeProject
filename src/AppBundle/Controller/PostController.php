@@ -36,13 +36,11 @@ class PostController extends Controller
     /**
      * @param $slug
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/{slug}", name="readPost", requirements={"slug": "\d+"})
+     * @Route("/{slug}", name="readPost")
      */
     public function readAction(Request $request, $slug)
     {
-
-
-        $post = $this->manager->findPostById($slug);
+        $post = $this->manager->findPostBySlug($slug);
         if(!$post) throw $this->createNotFoundException();
         $recents = $this->manager->findAllPosts(1);
         $form = $this->createForm(CommentType::class);
@@ -53,7 +51,6 @@ class PostController extends Controller
             $this->manager->addComment($comment);
             return $this->redirect($this->generateUrl('readPost',['slug'=> $slug])."#comments");
         }
-
         return $this->render(':Blog:post.html.twig', array(
             'post' => $post,
             'recents' => $recents,
@@ -61,8 +58,9 @@ class PostController extends Controller
             'comment_form' => $form->createView()
         ));
     }
+
     /**
-     * @Route("/new", name="addPost")
+     * @Route("/add/new", name="addPost")
      */
     public function addAction(Request $request)
     {

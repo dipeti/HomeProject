@@ -82,7 +82,7 @@
                     <div class="col-sm-12">
                         <ul style="padding: 10px" class="list-unstyled">
                             {% for recent in recents %}
-                                <li><a href="{{ path('readPost',{'slug': recent.id}) }}">{{ recent.title }}</a>
+                                <li><a href="{{ path('readPost',{'slug': recent.slug}) }}">{{ recent.title }}</a>
                                     <small> posted on {{ recent.postedAt.format('Y-m-d') }}</small>
                                 </li>
                             {% endfor %}

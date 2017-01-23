@@ -29,10 +29,10 @@ interface BlogManagerInterface
     public function findAllPosts($page, $limit);
 
     /**
-     * @param $slug integer
+     * @param $slug string
      * @return BlogPost
      */
-    public function findPostById($slug);
+    public function findPostBySlug($slug);
 
     /**
      * @param Comment $comment

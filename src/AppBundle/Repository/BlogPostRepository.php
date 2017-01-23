@@ -69,6 +69,9 @@ class BlogPostRepository extends EntityRepository
         shuffle($result);
         return $result;
     }
+    public function findBySlug($slug){
+       return $this->findOneBy(['_slug' => $slug]);
+    }
 
 
 
