@@ -54,5 +54,14 @@ class HomeController extends Controller
     }
 
 
+    /**
+     * @Route("/about" ,name="about")
+     */
+    public function aboutAction()
+    {
+       return $this->render('about/index.html.twig');
+    }
+
+
 
 }

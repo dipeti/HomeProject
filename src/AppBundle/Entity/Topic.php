@@ -8,7 +8,6 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Form\EntryType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -160,11 +159,13 @@ class Topic
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getLastEntryDate()
     {
-        return end($this->entries)->getCreatedAt();
+        if($this->entries->count()>0)
+        return $this->entries->last()->getCreatedAt();
+        return null;
     }
 
     /**
@@ -192,6 +193,16 @@ class Topic
         $this->entries = $entries;
     }
 
+    /**
+     * @return string
+     */
+    public function getLastUserToReply(){
+        if($this->entries->count()>0){
+            return $this->entries->last()->getUser()->getUsername();
+        }
+        return null;
+    }
+
 
 
 
@@ -214,6 +225,7 @@ class Topic
     public function addEntry(\AppBundle\Entity\Entry $entry)
     {
         $entry->setTopic($this);
+        $entry->setNumber($this->entries->count());
         $this->entries->add($entry);
         return $this;
     }

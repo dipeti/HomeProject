@@ -44,8 +44,8 @@
                                     <li class="{% if app.request.attributes.get('_route') starts with 'homepage' or  app.request.attributes.get('_route') ends with 'Post'  %}active{% endif %}" ><a href="{{ path('homepage') }}">Blog</a></li>
                                     <li class="{% if app.request.attributes.get('_route') starts with 'downloads' %}active{% endif %}"><a href="{{ path('downloads_index') }}">Downloads</a></li>
                                     <li class="{% if app.request.attributes.get('_route') starts with 'forum' %}active {% endif %}"><a href="{{ path("forum_index") }}">Forum</a></li>
-                                    <li><a href="#">About</a></li>
-                                    <li><a href="#">Contact</a></li>
+                                    <li><a href="{{ path('about') }}">About</a></li>
+                                    {#<li><a href="#">Contact</a></li>#}
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
                                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -68,7 +68,7 @@
                     <div class="container">
                         <hr>
                         <div class="row">
-                            <p class="text-muted">© 2013 Company Name. All rights reserved</p>
+                            <p class="text-muted">© {{ date()|date('Y') }} Peter Dinya. All rights reserved</p>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,74 @@
+{% extends "base.html.twig" %}
+{% block pagecontent %}
+<div class="container">
+    <div class="row">
+        <div class="well">
+            <h3>{{ topic.title }}</h3>
+            <span>{{ topic.description }}</span>
+        </div><hr>
+        <ol class="breadcrumb pull-left">
+            <li><a href="{{ path('forum_index') }}">Forum</a></li>
+            <li class="active">{{ topic.title }}</li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-sm-9">
+            <ul class="list-group">
+            {% for entry in entries %}
+                <li class="list-group-item">
+                    <div>
+                        <p class="text-right small">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="btn btn-xs btn-warning" href="{{ path('forum_edit_reply',{'id': entry.id}) }}">Edit</a>
+                                <a class="btn btn-xs btn-danger" href="">Delete</a>
+                            {% endif %}
+                            <span class="glyphicon glyphicon-time"></span> {{ entry.createdAt|date('H:i Y/m/d ') }}
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 pull-left text-center">
+                            <span class="glyphicon glyphicon-user"></span>
+                            {#<img class="forum" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png">#}
+                            <p>{{ entry.user }}</p>
+                        </div>
+                        <div class="col-md-10">
+                            <p>{{ entry.content }}</p>
+                            {% if entry.isModified %}
+                                <i class="pull-right"> Modified at {{ entry.lastModifiedAt|date('Y-m-d H:i') }} </i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <p class="text-center"><a class="btn btn-primary btn-sm" href="{{ path('forum_leave_reply',{'slug': topic.slug}) }}"><span class="glyphicon glyphicon-book"></span> Reply to this topic</a></p>
+            {% else %}
+                <div class="alert alert-warning" style="display:inline-block;">You must be <a href="{{ path('fos_user_security_login') }}">logged in</a> to reply to this topic!</div>
+            {% endif %}
+
+        </div>
+        <div class="col-sm-3">
+            <div class="well">
+                <div class="row">
+                    <div class="col-xs-12">
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <img class="profile" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png">
+                            <h4>{{ app.user.username }}</h4>
+
+                            <table>
+                                <tr><td><a href="{{ path('fos_user_profile_show') }}"> <span class="glyphicon glyphicon-user"></span> Account settings</a></td></tr>
+                                <tr><td><a href="{{ path('fos_user_security_logout') }}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></td></tr>
+                            </table>
+                        {% else %}
+                            <h4><strong><a href="{{ path('fos_user_security_login') }}">Log in</a></strong> to leave a reply</h4>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

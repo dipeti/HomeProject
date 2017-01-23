@@ -107,7 +107,7 @@ class Entry
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getUser()
     {
@@ -115,9 +115,9 @@ class Entry
     }
 
     /**
-     * @param mixed $user
+     * @param User $user
      */
-    public function setUser($user)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }

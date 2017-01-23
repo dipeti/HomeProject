@@ -8,10 +8,13 @@
     <div class="clearfix"></div>
   </div>
   <p class="lead">This is the right place to discuss any ideas, critics, feature requests and all the ideas regarding our website. Please follow the forum rules and always check FAQ before posting to prevent duplicate posts.</p>
-  <div class="row">
-		<div class="col-sm-1"><a class="btn btn-primary btn-sm" href="{{ path('forum_add_topic') }}"><span class="glyphicon glyphicon-book"></span> Add new topic</a>
-		</div>
-	</div><hr>
+  {% if is_granted('ROLE_ADMIN') %}
+    <div class="row">
+      <div class="col-sm-1"><a class="btn btn-primary btn-sm" href="{{ path('forum_add_topic') }}"><span class="glyphicon glyphicon-book"></span> Add new topic</a>
+      </div>
+    </div>
+  {% endif %}
+  <hr>
   <table class="table forum table-striped">
     <thead>
       <tr>
@@ -19,30 +22,25 @@
         <th>
           <h3>Topics</h3>
         </th>
-        <th class="cell-stat text-center hidden-xs hidden-sm">Topics</th>
         <th class="cell-stat text-center hidden-xs hidden-sm">Posts</th>
         <th class="cell-stat-2x hidden-xs hidden-sm">Last Post</th>
       </tr>
     </thead>
     <tbody>
+    {% for topic in topics %}
       <tr>
         <td class="text-center"><i class="fa fa-question fa-2x text-primary"></i></td>
         <td>
-          <h4><a href="#"><strong>Frequently Asked Questions</strong></a><br><small>Some description</small></h4>
+          <h4><a href="{{ path('forum_show_topic',{'slug': topic.slug}) }}"><strong>{{ topic.title }}</strong></a><br><small>{{ topic.description }}</small></h4>
         </td>
-        <td class="text-center hidden-xs hidden-sm"><a href="#">9 542</a></td>
-        <td class="text-center hidden-xs hidden-sm"><a href="#">89 897</a></td>
-        <td class="hidden-xs hidden-sm">by <a href="#">John Doe</a><br><small><i class="fa fa-clock-o"></i> 3 months ago</small></td>
+        <td class="text-center hidden-xs hidden-sm"><a href="#">{{ topic.entries.count }}</a></td>
+        {% if topic.entries|length > 0 %}
+          <td class="hidden-xs hidden-sm">by <a href="{{ path('show_user_info', {'username': topic.lastUserToReply}) }}">{{ topic.lastUserToReply }}</a><br><small><i class="fa fa-clock-o"></i>{{ topic.lastEntryDate|date('Y-m-d H:i') }}</small></td>
+        {% else %}
+          <td class="hidden-xs hidden-sm">No replies yet</td>
+        {% endif %}
       </tr>
-      <tr>
-        <td class="text-center"><i class="fa fa-exclamation fa-2x text-danger"></i></td>
-        <td>
-          <h4><a href="#">Important changes</a><br><small>Category description</small></h4>
-        </td>
-        <td class="text-center hidden-xs hidden-sm"><a href="#">6532</a></td>
-        <td class="text-center hidden-xs hidden-sm"><a href="#">152123</a></td>
-        <td class="hidden-xs hidden-sm">by <a href="#">Jane Doe</a><br><small><i class="fa fa-clock-o"></i> 1 years ago</small></td>
-      </tr>
+    {% endfor %}
     </tbody>
   </table>
 </div>
