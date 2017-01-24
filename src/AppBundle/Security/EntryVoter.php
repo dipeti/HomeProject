@@ -80,7 +80,7 @@ class EntryVoter extends Voter
     {
         $now = new \DateTime();
         $five_minutes = \DateInterval::createFromDateString("5 minutes");
-        $diff = $now->diff($entry->getCreatedAt());
-        return $user === $entry->getUser() && !$entry->isModified() && $entry->getCreatedAt()->add($five_minutes)>$now;
+        $created = clone$entry->getCreatedAt();
+        return $user === $entry->getUser() && !$entry->isModified() && $created->add($five_minutes)>$now;
     }
 }
