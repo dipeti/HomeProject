@@ -3,7 +3,7 @@ imports:
 
 doctrine:
     dbal:
-        url: "%env(DATABASE_URL)%"
+        url: "%env(CLEARDB_DATABASE_URL)%"
 #        metadata_cache_driver: apc
 #        result_cache_driver: apc
 #        query_cache_driver: apc
