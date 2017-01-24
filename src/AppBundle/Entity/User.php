@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @package AppBundle\Entity
  * @ORM\Entity()
  * @ORM\Table(name="users")
+ * @ORM\HasLifecycleCallbacks()
  */
 class User extends BaseUser
 {
@@ -23,6 +24,15 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function initializeAuthorization(){
+        if($this->getUsername()==='admin')
+                $this->addRole('ROLE_ADMIN');
+
+    }
 
 
 }
