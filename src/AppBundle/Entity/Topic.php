@@ -186,6 +186,15 @@ class Topic
     }
 
     /**
+     * @param int $offset
+     * @return ArrayCollection
+     */
+    public function getEntriesWithOffset($offset=0, $limit=10)
+    {
+        return array_slice($this->entries->toArray(),$offset,$limit);
+    }
+
+    /**
      * @param mixed $entries
      */
     public function setEntries($entries)
@@ -225,7 +234,7 @@ class Topic
     public function addEntry(\AppBundle\Entity\Entry $entry)
     {
         $entry->setTopic($this);
-        $entry->setNumber($this->entries->count());
+        $entry->setNumber($this->entries->count()>0 ? $this->entries->last()->getNumber()+1 : 1);
         $this->entries->add($entry);
         return $this;
     }

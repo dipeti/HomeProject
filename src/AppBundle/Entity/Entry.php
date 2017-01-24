@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EntryRepository")
  * @ORM\Table(name="entries")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -123,7 +123,7 @@ class Entry
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -139,7 +139,7 @@ class Entry
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getLastModifiedAt()
     {

@@ -24,7 +24,13 @@ class EntryType extends AbstractType
         $builder
             ->add('content', TextareaType::class, [
                 'label' => 'Reply',
-                'attr' => ['placeholder' => 'Leave a reply...']
+                'attr' => [
+                    'placeholder' => 'Leave a reply...',
+                    'class' => 'ckeditor',
+                    'rows' => '20',
+                    'cols' => '80',
+                ]
+
             ])
             ->add('Submit', SubmitType::class);
     }

@@ -4,11 +4,11 @@
 
 {% block fos_user_content %}
     <div class="page-header">
-        <h1>Sikeres visszaigazolás</h1>
+        <h1>Success</h1>
     </div>
     {#<p>{{ 'registration.confirmed'|trans({'%username%': user.username}) }}</p>#}
 
-    <a href="{{ path('fos_user_profile_show') }}"><button type="button" class="btn btn-success">Ugrás a profilomhoz</button></a>
+    <a href="{{ path('fos_user_profile_show') }}"><button type="button" class="btn btn-success">Jump to my profile</button></a>
 
     {% if targetUrl %}
     <p><a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a></p>

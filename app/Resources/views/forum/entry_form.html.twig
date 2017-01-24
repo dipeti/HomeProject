@@ -6,8 +6,12 @@
             <textarea class="form-control" name="original" id="original" disabled>{{ original }}</textarea>
             <hr>
         {% endif %}
-        {{ form(form) }}
-    
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="hidden" name="_target_path" value="{{ app.request.headers.get('referer') }}">
+        {{ form_end(form) }}
+            <script src="{{ asset('bundles/app/ckeditor/ckeditor.js') }}"></script>
     </div>
 
 {% endblock %}

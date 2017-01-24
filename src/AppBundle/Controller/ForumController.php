@@ -35,11 +35,27 @@ class ForumController extends Controller
     /**
      * @Route("/{slug}", name="forum_show_topic")
      */
-    public function showTopicAction(Topic $topic)
+    public function showTopicAction(Topic $topic, Request $request)
     {
+        if($request->query->has('page')){
+            $page = $request->query->get('page');
+        }else
+            $page = 1;
+        if($request->query->has('limit')){
+            $limit = $request->query->get('limit');
+        }else
+            $limit = 10;
+        $entries = $topic->getEntriesWithOffset(($page-1)*$limit,$limit);
+        $entries_count = count($entries);
+        $total_entries_count=$topic->getEntries()->count();
+        $pages = ceil($total_entries_count/$limit);
+        //dump($entries); dump($entries_count); dump($total_entries_count); dump($pages); die();
         return $this->render('forum/entries.html.twig',[
             'topic' => $topic,
-            'entries' => $topic->getEntries(),
+            'entries' => $entries,
+            'pages' => $pages,
+            'page' => $page,
+            'limit' => $limit,
         ]);
     }
 
@@ -58,9 +74,9 @@ class ForumController extends Controller
             $entry->setUser($this->getUser());
            $em = $this->getDoctrine()->getManager();
             $em->persist($entry);
-            //dump($topic);dump($entry); die();
             $em->flush();
-            return $this->redirectToRoute('forum_show_topic', ['slug' => $topic->getSlug()]);
+            return $this->redirect($request->get('_target_path', $this->generateUrl('forum_show_topic',['slug' => $topic->getSlug()])));
+
         }
         return $this->render(':forum:entry_form.html.twig',[
             'form' => $form->createView(),
@@ -73,6 +89,7 @@ class ForumController extends Controller
      */
     public function editReplyAction(Entry $entry, Request $request)
     {
+        $this->denyAccessUnlessGranted('edit', $entry);
         $form = $this->createForm('AppBundle\Form\EntryType', $entry);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -85,6 +102,17 @@ class ForumController extends Controller
             'form' => $form->createView(),
             'original' => $entry->getContent(),
         ]);
+    }
+
+    /**
+     * @Route("/reply/delete/{id}", name="forum_delete_reply")
+     */
+    public function deleteReplyAction(Entry $entry)
+    {
+       $em = $this->getDoctrine()->getManager();
+        $em->remove($entry);
+        $em->flush();
+        return $this->redirectToRoute('forum_show_topic',['slug'=>$entry->getTopic()->getSlug()]);
     }
 
     /**
@@ -101,7 +129,6 @@ class ForumController extends Controller
             $topic->setHost($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($topic);
-            //dump($topic); die();
             $em->flush();
             return $this->redirectToRoute('forum_index');
         }
@@ -123,11 +150,5 @@ class ForumController extends Controller
     }
 
 
-    /**
-     * @Route("/{$id}/page/1")
-     */
-    public function showAction()
-    {
-        
-    }
+
 }

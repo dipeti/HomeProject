@@ -98,7 +98,7 @@ class BlogManager implements BlogManagerInterface
 
     public function findAllTags($limit)
     {
-       return array_slice($this->blogRepo->findAllTags($limit),0,5);
+       return array_slice($this->blogRepo->findAllTags(),0,$limit);
     }
 
 

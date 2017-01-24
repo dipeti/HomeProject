@@ -22,8 +22,8 @@
         <th>
           <h3>Topics</h3>
         </th>
-        <th class="cell-stat text-center hidden-xs hidden-sm">Posts</th>
-        <th class="cell-stat-2x hidden-xs hidden-sm">Last Post</th>
+        <th class="cell-stat text-center hidden-xs hidden-sm">Replies</th>
+        <th class="cell-stat-2x hidden-xs hidden-sm">Last</th>
       </tr>
     </thead>
     <tbody>
@@ -33,7 +33,7 @@
         <td>
           <h4><a href="{{ path('forum_show_topic',{'slug': topic.slug}) }}"><strong>{{ topic.title }}</strong></a><br><small>{{ topic.description }}</small></h4>
         </td>
-        <td class="text-center hidden-xs hidden-sm"><a href="#">{{ topic.entries.count }}</a></td>
+        <td class="text-center hidden-xs hidden-sm"><a href="{{ path('forum_show_topic',{'slug': topic.slug}) }}">{{ topic.entries.count }}</a></td>
         {% if topic.entries|length > 0 %}
           <td class="hidden-xs hidden-sm">by <a href="{{ path('show_user_info', {'username': topic.lastUserToReply}) }}">{{ topic.lastUserToReply }}</a><br><small><i class="fa fa-clock-o"></i>{{ topic.lastEntryDate|date('Y-m-d H:i') }}</small></td>
         {% else %}

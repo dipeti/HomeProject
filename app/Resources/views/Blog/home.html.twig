@@ -70,25 +70,25 @@
             <div class="well">
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4>Blog Categories</h4>
-                        <ul class="list-unstyled">
-                            {#{% for category in categories %}#}
-                                {#<li><a href="#">{{ category.name }}</a></li>#}
-                            {#{% endfor %}#}
+                    {#<div class="col-md-6">#}
+                        {#<h4>Blog Categories</h4>#}
+                        {#<ul class="list-unstyled">#}
+                            {#&#123;&#35;{% for category in categories %}&#35;&#125;#}
+                                {#&#123;&#35;<li><a href="#">{{ category.name }}</a></li>&#35;&#125;#}
+                            {#&#123;&#35;{% endfor %}&#35;&#125;#}
 
-                            <li><a href="#">Category Name</a>
-                            </li>
-                            <li><a href="#">Category Name</a>
-                            </li>
-                            <li><a href="#">Category Name</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.col-lg-6 -->
-                    <div class="col-md-6">
+                            {#<li><a href="#">Category Name</a>#}
+                            {#</li>#}
+                            {#<li><a href="#">Category Name</a>#}
+                            {#</li>#}
+                            {#<li><a href="#">Category Name</a>#}
+                            {#</li>#}
+                        {#</ul>#}
+                    {#</div>#}
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-12">
                         <h4>Tags</h4>
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled" style="columns: 2">
                             {% for tag in randomtags %}
                             <li><a href="{{ path('homepage') }}?q={{ tag }}"><span class="label label-default">{{ tag }}</span></a>
                             {% endfor %}

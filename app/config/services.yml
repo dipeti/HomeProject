@@ -23,3 +23,9 @@ services:
       app.file_uploader:
           class: AppBundle\Service\FileUploadHelper
           arguments: ["%files_dir%"]
+      app.entry_voter:
+          class: AppBundle\Security\EntryVoter
+          arguments: ["@security.access.decision_manager"]
+          tags:
+            - { name: security.voter }
+          public: false

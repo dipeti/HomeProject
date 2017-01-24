@@ -33,7 +33,8 @@ class PostType extends AbstractType
             ->add('_content', TextareaType::class, [
                 'attr'=> [
                     'rows' => 10,
-                    'placeholder' => 'Add content...'
+                    'placeholder' => 'Add content...',
+                    'class' => 'ckeditor'
                 ]
             ])
             ->add('Save', SubmitType::class);
