@@ -8,7 +8,7 @@
     <div class="clearfix"></div>
   </div>
   <p class="lead">This is the right place to discuss any ideas, critics, feature requests and all the ideas regarding our website. Please follow the forum rules and always check FAQ before posting to prevent duplicate posts.</p>
-  {% if is_granted('ROLE_ADMIN') %}
+  {% if is_granted('ROLE_USER') %}
     <div class="row">
       <div class="col-sm-1"><a class="btn btn-primary btn-sm" href="{{ path('forum_add_topic') }}"><span class="glyphicon glyphicon-book"></span> Add new topic</a>
       </div>

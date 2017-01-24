@@ -2,21 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: dipet
- * Date: 2017. 01. 23.
- * Time: 22:57
+ * Date: 2017. 01. 24.
+ * Time: 22:13
  */
 
 namespace AppBundle\Security;
 
 
-use AppBundle\Entity\Entry;
+use AppBundle\Entity\Topic;
 use AppBundle\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class EntryVoter extends Voter
+class TopicVoter extends Voter
 {
     const EDIT = 'edit';
     /**
@@ -43,10 +43,10 @@ class EntryVoter extends Voter
         if(!in_array($attribute,[self::EDIT])){
             return false;
         }
-        if(!$subject instanceof Entry){
+        if(!$subject instanceof Topic){
             return false;
         }
-      return true;
+        return true;
     }
 
     /**
@@ -66,21 +66,18 @@ class EntryVoter extends Voter
         $user = $token->getUser();
         if(!$user instanceof User) return false;
         /**
-         * @var Entry $entry
+         * @var Topic $topic
          */
-        $entry = $subject;
+        $topic = $subject;
         switch($attribute){
             case self::EDIT:
-                return $this->canEdit($entry, $user);
+                return $this->canEdit($topic, $user);
         }
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canEdit(Entry $entry,User $user)
+    private function canEdit(Topic $topic,User $user)
     {
-        $now = new \DateTime();
-        $five_minutes = \DateInterval::createFromDateString("5 minutes");
-        $diff = $now->diff($entry->getCreatedAt());
-        return $user === $entry->getUser() && !$entry->isModified() && $entry->getCreatedAt()->add($five_minutes)>$now;
+        return $user === $topic->getHost();
     }
 }

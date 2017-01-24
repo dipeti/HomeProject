@@ -49,12 +49,12 @@ class Topic
      */
     private $host;
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastEntryDate;
     /**
      * @var array $entries
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Entry", mappedBy="topic", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Entry", mappedBy="topic", cascade={"persist", "remove"})
      * @Assert\Valid()
      *
      */
@@ -170,11 +170,13 @@ class Topic
 
     /**
      * @param mixed $lastEntryDate
-     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
-    public function setLastEntryDate($lastEntryDate)
+    public function setLastEntryDate()
     {
-        $this->lastEntryDate = new \DateTime();
+        if($this->entries->count()>0){
+            $this->lastEntryDate = $this->entries->last()->getCreatedAt();
+        }
     }
 
     /**
@@ -185,14 +187,6 @@ class Topic
         return $this->entries;
     }
 
-    /**
-     * @param int $offset
-     * @return ArrayCollection
-     */
-    public function getEntriesWithOffset($offset=0, $limit=10)
-    {
-        return array_slice($this->entries->toArray(),$offset,$limit);
-    }
 
     /**
      * @param mixed $entries

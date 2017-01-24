@@ -30,3 +30,7 @@ textarea.form-control{
 	font-size: x-large;
 }
 
+.username{
+	font-size: 18px;
+	font-style: italic;
+}

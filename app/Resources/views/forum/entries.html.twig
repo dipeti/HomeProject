@@ -10,7 +10,12 @@
         <ol class="breadcrumb pull-left">
             <li><a href="{{ path('forum_index') }}">Forum</a></li>
             <li class="active">{{ topic.title }}</li>
+            {% if is_granted('edit',topic) %}
+                <a class="btn btn-xs btn-warning" href="{{ path('forum_edit_topic',{'id': topic.id}) }}">Edit topic</a>
+                <a class="btn btn-xs btn-danger" href="{{ path('forum_delete_topic',{'id': topic.id}) }}">Delete topic</a>
+            {% endif %}
         </ol>
+
         <div class="dropdown pull-right">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 {{ limit }}
@@ -98,7 +103,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <img class="profile" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png">
+                            <img class="profile" src="{{ asset('bundles/app/files/user_icon.png') }}">
                             <h4>{{ app.user.username }}</h4>
 
                             <table>

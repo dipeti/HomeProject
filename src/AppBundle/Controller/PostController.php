@@ -120,7 +120,7 @@ class PostController extends Controller
 
             $this->manager->addComment($toBeEdited);
 
-            return  $this->redirect($this->generateUrl('readPost',['slug'=>$toBeEdited->getPost()->getId()])."#comments");
+            return  $this->redirect($this->generateUrl('readPost',['slug'=>$toBeEdited->getPost()->getSlug()])."#comments");
         }
 
         return $this->render('Blog/comment_form.html.twig', [

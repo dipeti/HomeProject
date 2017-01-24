@@ -24,14 +24,16 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 class BlogManager implements BlogManagerInterface
 {
 
+    /**
+     * @var BlogPostRepository $blogRepo
+     */
     protected $blogRepo;
+    /**
+     * @var CommentRepository $commentRepo
+     */
     protected $commentRepo;
     public function __construct(ObjectRepository $blogRepo, ObjectRepository $commentRepo)
     {
-        /**
-         * @var BlogPostRepository $blogRepo
-         * @var CommentRepository $commentRepo
-         */
         $this->blogRepo = $blogRepo;
         $this->commentRepo = $commentRepo;
     }

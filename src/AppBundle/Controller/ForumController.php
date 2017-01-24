@@ -5,9 +5,12 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Entry;
 use AppBundle\Entity\Topic;
 use AppBundle\Entity\User;
+use AppBundle\Service\ForumManager;
+use AppBundle\Service\ForumManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,14 +22,25 @@ use Symfony\Component\HttpFoundation\Request;
 class ForumController extends Controller
 {
     /**
+     * @var ForumManager $forumManager
+     */
+    private $forumManager;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        parent::setContainer($container);
+        $this->forumManager = $this->get('app.forum_manager');
+    }
+
+
+    /**
      * @param $name
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="forum_index")
      */
     public function indexAction()
     {
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Topic');
-        $topics = $repo->findAll();
+        $topics = $this->forumManager->getAllTopics();
         return $this->render(':forum:index.html.twig',[
             'topics' => $topics,
         ]);
@@ -45,11 +59,11 @@ class ForumController extends Controller
             $limit = $request->query->get('limit');
         }else
             $limit = 10;
-        $entries = $topic->getEntriesWithOffset(($page-1)*$limit,$limit);
-        $entries_count = count($entries);
+        $offset = ($page-1)*$limit;
+        $entries = $this->forumManager->getEntriesByOffset($topic, $offset,$limit);
         $total_entries_count=$topic->getEntries()->count();
-        $pages = ceil($total_entries_count/$limit);
-        //dump($entries); dump($entries_count); dump($total_entries_count); dump($pages); die();
+        $pages = $total_entries_count ? ceil($total_entries_count/$limit) : 1;
+        //dump($entries);  dump($total_entries_count); dump($pages); die();
         return $this->render('forum/entries.html.twig',[
             'topic' => $topic,
             'entries' => $entries,
@@ -70,13 +84,10 @@ class ForumController extends Controller
         $form = $this->createForm('AppBundle\Form\EntryType', $entry);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            $topic->addEntry($entry);
-            $entry->setUser($this->getUser());
-           $em = $this->getDoctrine()->getManager();
-            $em->persist($entry);
-            $em->flush();
-            return $this->redirect($request->get('_target_path', $this->generateUrl('forum_show_topic',['slug' => $topic->getSlug()])));
 
+            $this->forumManager->addEntry($entry, $topic,$this->getUser());
+            $redirectURL = $request->get('_target_path', $this->generateUrl('forum_show_topic',['slug' => $topic->getSlug()]));
+            return $this->redirect($redirectURL);
         }
         return $this->render(':forum:entry_form.html.twig',[
             'form' => $form->createView(),
@@ -93,9 +104,7 @@ class ForumController extends Controller
         $form = $this->createForm('AppBundle\Form\EntryType', $entry);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entry);
-            $em->flush();
+            $this->forumManager->addEntry($entry);
             return $this->redirectToRoute('forum_show_topic', ['slug' => $entry->getTopic()->getSlug()]);
         }
         return $this->render(':forum:entry_form.html.twig',[
@@ -109,9 +118,7 @@ class ForumController extends Controller
      */
     public function deleteReplyAction(Entry $entry)
     {
-       $em = $this->getDoctrine()->getManager();
-        $em->remove($entry);
-        $em->flush();
+        $this->forumManager->deleteEntry($entry);
         return $this->redirectToRoute('forum_show_topic',['slug'=>$entry->getTopic()->getSlug()]);
     }
 
@@ -120,16 +127,13 @@ class ForumController extends Controller
      */
     public function addTopicAction(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $topic = new Topic();
         $form = $this->createForm('AppBundle\Form\TopicType',$topic);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
-            $topic->setHost($this->getUser());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($topic);
-            $em->flush();
+            $this->forumManager->addTopic($topic,$this->getUser());
             return $this->redirectToRoute('forum_index');
         }
 
@@ -137,6 +141,37 @@ class ForumController extends Controller
             'form'=>$form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/edit/{id}", name="forum_edit_topic")
+     */
+    public function editTopicAction(Request $request, Topic $topic)
+    {
+        $this->denyAccessUnlessGranted('edit', $topic);
+
+        $form = $this->createForm('AppBundle\Form\TopicType',$topic);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $this->forumManager->addTopic($topic);
+            return $this->redirectToRoute('forum_index');
+        }
+        return $this->render('forum/topic_form.html.twig',[
+            'form'=>$form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="forum_delete_topic")
+     */
+    public function deleteTopicAction(Topic $topic)
+    {
+        $this->denyAccessUnlessGranted('edit', $topic);
+       $this->forumManager->deleteTopic($topic);
+       return $this->redirectToRoute('forum_index');
+    }
+
+
 
     /**
      * @Route("/profile/{username}", name="show_user_info")

@@ -10,21 +10,30 @@ services:
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
       app.blog_repo:
           class: AppBundle\Repository\BlogPostRepository
-          factory: "doctrine.orm.entity_manager:getRepository"
+          factory: "doctrine.orm.entity_manager:getRepository" #newer sytax
           arguments: [AppBundle\Entity\BlogPost]
       app.comment_repo:
           class: AppBundle\Repository\CommentRepository
-          factory: ["@doctrine", getRepository]
+          factory: ["@doctrine", getRepository] #older syntax
           arguments:
             - AppBundle\Entity\Comment
       app.blog_manager:
           class: AppBundle\Service\BlogManager
           arguments: ["@app.blog_repo", "@app.comment_repo"]
+      app.forum_manager:
+          class: AppBundle\Service\ForumManager
+          arguments: ["@doctrine.orm.default_entity_manager"]
       app.file_uploader:
           class: AppBundle\Service\FileUploadHelper
           arguments: ["%files_dir%"]
       app.entry_voter:
           class: AppBundle\Security\EntryVoter
+          arguments: ["@security.access.decision_manager"]
+          tags:
+            - { name: security.voter }
+          public: false
+      app.topic_voter:
+          class: AppBundle\Security\TopicVoter
           arguments: ["@security.access.decision_manager"]
           tags:
             - { name: security.voter }
