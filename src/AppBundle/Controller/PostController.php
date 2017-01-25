@@ -80,7 +80,7 @@ class PostController extends Controller
             $tags = explode(',',str_replace(' ','',$post->getTags()));
             $post->setTags($tags);
             $this->manager->addPost($post);
-            return $this->redirectToRoute('readPost', ['slug' => $post->getId()]);
+            return $this->redirectToRoute('readPost', ['slug' => $post->getSlug()]);
         }
         return $this->render(":Blog:blogpost_form.html.twig", [
             'form' => $form->createView()
