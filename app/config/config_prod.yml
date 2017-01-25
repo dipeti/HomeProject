@@ -7,6 +7,11 @@ doctrine:
 #        metadata_cache_driver: apc
 #        result_cache_driver: apc
 #        query_cache_driver: apc
+swiftmailer:
+    transport: "%env(MAILER_TRANSPORT)%"
+    host:      "%env(MAILER_HOST)%"
+    username:  "%env(MAILER_USER)%"
+    password:  "%env(MAILER_PASSWORD)%"
 
 monolog:
     handlers:
