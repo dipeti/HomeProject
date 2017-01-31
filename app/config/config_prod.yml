@@ -9,9 +9,10 @@ doctrine:
 #        query_cache_driver: apc
 swiftmailer:
     transport: smtp
-    host:      "%env(SENDGRID_HOST)%"
+    host:      smtp.sendgrid.net
     username:  "%env(SENDGRID_USERNAME)%"
     password:  "%env(SENDGRID_PASSWORD)%"
+    port: 587
 monolog:
     handlers:
         main:
