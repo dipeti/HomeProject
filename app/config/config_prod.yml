@@ -7,7 +7,14 @@ doctrine:
 #        metadata_cache_driver: apc
 #        result_cache_driver: apc
 #        query_cache_driver: apc
-
+swiftmailer:
+    transport: smtp
+    host:      "%env(SENDGRID_HOST)%"
+    username:  "%env(SENDGRID_USERNAME)%"
+    password:  "%env(SENDGRID_PASSWORD)%"
+    spool:     { type: memory }
+    port: 587
+    encryption: ~
 monolog:
     handlers:
         main:
