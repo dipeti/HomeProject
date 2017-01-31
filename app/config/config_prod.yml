@@ -12,9 +12,6 @@ swiftmailer:
     host:      "%env(SENDGRID_HOST)%"
     username:  "%env(SENDGRID_USERNAME)%"
     password:  "%env(SENDGRID_PASSWORD)%"
-    spool:     { type: memory }
-    port: 587
-    encryption: ~
 monolog:
     handlers:
         main:
