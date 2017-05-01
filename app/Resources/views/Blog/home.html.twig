@@ -24,7 +24,7 @@
                     <a href="{{ path('readPost',{'slug': post.slug}) }}"><img class="img-post img-responsive" src="{{ asset(images_dir ~ post.imgURI) }}" alt="{{ post.title }}"></a> <hr>
                 {% endif %}
 
-                <p>{{ post.content|slice(0,300)|raw }}...</p>
+                <div>{{ post.content|slice(0,300)|raw }}...</div>
                 <a class="btn btn-primary" href="{{ path('readPost',{'slug': post.slug}) }}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
                 <p class="tags">Tags:
                     {% for tag in post.tags %}

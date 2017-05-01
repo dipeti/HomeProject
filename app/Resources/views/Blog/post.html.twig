@@ -23,7 +23,7 @@
                 <img class="img-responsive center-block img-post" src="{{ asset(images_dir~post.imgURI) }}" alt="{{ post.title }}"><hr>
             {% endif %}
             <!-- Post Content -->
-            <p class="lead">{{ post.content|raw|nl2br }}</p>
+            <p class="lead"><div>{{ post.content|raw|nl2br }}</div></p>
             <hr>
 
             <!-- Blog Comments -->
